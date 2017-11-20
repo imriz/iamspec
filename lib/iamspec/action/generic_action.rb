@@ -48,6 +48,24 @@ module Iamspec::Action
       self
     end
 
+    def with_policy_from_user_name(user_name, assume_role_arn = nil)
+      opts = {}
+      if assume_role_arn
+        @sts ||= Aws::STS::Client.new()
+        opts[:credentials] = @sts.assume_role(role_arn: assume_role_arn, role_session_name: 'temp')
+      end
+      iam = Aws::IAM::Client.new(opts)
+      policies = []
+      iam.list_user_policies(user_name: user_name).policy_names.each do |policy|
+        policies << iam.get_user_policy(user_name: user_name, policy_name: policy).policy_document
+      end
+      iam.list_attached_user_policies(user_name: user_name).attached_policies.each do |attached_policy|
+        policy = iam.get_policy(policy_arn: attached_policy.policy_arn).policy
+        policies << URI.decode_www_form_component(iam.get_policy_version(policy_arn: policy.arn, version_id: policy.default_version_id).policy_version.document)
+      end
+      with_policy(policies)
+    end
+
     def with_policy(policy)
       @policy = policy
       self
