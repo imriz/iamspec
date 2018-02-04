@@ -110,7 +110,7 @@ module Iamspec::Action
       end
       iam = Aws::IAM::Client.new(opts)
       @userid = iam.get_user(user_name: user_arn).user.user_id
-      @context_entries[:userid] = Aws::IAM::Types::ContextEntry.new({context_key_name: "aws:userid", context_key_values: ["#{@userid}:#{user_arn}"], context_key_type: "string"})
+      @context_entries[:userid] = Aws::IAM::Types::ContextEntry.new({context_key_name: "aws:userid", context_key_values: ["#{@userid}"], context_key_type: "string"})
       self
     end
 
