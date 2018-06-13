@@ -9,6 +9,10 @@ require 'iamspec/action/generic_action'
 require 'iamspec/action/s3_action'
 require 'iamspec/action/assume_role'
 
+Aws.config.update({
+                      retry_limit: 12
+                  })
+
 extend Iamspec::Type
 class RSpec::Core::ExampleGroup
 
