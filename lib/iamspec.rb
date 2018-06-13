@@ -10,7 +10,7 @@ require 'iamspec/action/s3_action'
 require 'iamspec/action/assume_role'
 
 Aws.config.update({
-                      retry_limit: 13
+                      retry_limit: 14
                   })
 
 extend Iamspec::Type
