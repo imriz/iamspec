@@ -143,6 +143,12 @@ module Iamspec::Action
       @context_entries[:sourceip] = Aws::IAM::Types::ContextEntry.new({context_key_name: "aws:SourceIp", context_key_values: [sourceip], context_key_type: "string"})
       self
     end
+    
+    def with_fullcontrolgrant(id)
+      @id = id
+      @context_entries[:id] = Aws::IAM::Types::ContextEntry.new({context_key_name: "s3:x-amz-grant-full-control", context_key_values: [id], context_key_type: "string"})
+      self
+    end
 
 
     def with_resource_policy(role_arn = nil, resource_arns = @resource_arns)
