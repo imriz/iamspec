@@ -144,6 +144,10 @@ module Iamspec::Action
       self
     end
 
+    def add_context(context_key_name, context_key_values, context_key_type="string")
+      @context_entries[context_key_name.to_sym] = Aws::IAM::Types::ContextEntry.new({context_key_name: context_key_name, context_key_values: (context_key_values.is_a? Array ? context_key_values : [context_key_values]), context_key_type: context_key_type})
+      self
+    end
 
     def with_resource_policy(role_arn = nil, resource_arns = @resource_arns)
       @sts ||= Aws::STS::Client.new()
