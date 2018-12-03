@@ -145,7 +145,7 @@ module Iamspec::Action
     end
 
     def add_context(context_key_name, context_key_values, context_key_type="string")
-      @context_entries[context_key_name.to_sym] = Aws::IAM::Types::ContextEntry.new({context_key_name: context_key_name, context_key_values: (context_key_values.is_a? Array ? context_key_values : [context_key_values]), context_key_type: context_key_type})
+      @context_entries[context_key_name.to_sym] = Aws::IAM::Types::ContextEntry.new({context_key_name: context_key_name, context_key_values: (context_key_values.is_a?(Array) ? context_key_values : [context_key_values]), context_key_type: context_key_type})
       self
     end
 
