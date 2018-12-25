@@ -1,6 +1,7 @@
 require 'aws-sdk'
 require 'iamspec/version'
 require 'iamspec/helpers/account'
+require 'iamspec/helpers/stscache'
 require 'iamspec/matcher/be_allowed_to'
 require 'iamspec/matcher/not_be_allowed_to'
 require 'iamspec/type/generic_policy_source'

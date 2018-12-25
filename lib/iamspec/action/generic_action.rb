@@ -12,6 +12,8 @@ module Iamspec::Action
   end
 
   class GenericAction
+    include Iamspec::Helpers
+
     attr_reader :action_names
     attr_reader :caller_arn
     attr_reader :resource_arns
@@ -52,7 +54,7 @@ module Iamspec::Action
       opts = {}
       if assume_role_arn
         @sts ||= Aws::STS::Client.new()
-        opts[:credentials] = @sts.assume_role(role_arn: assume_role_arn, role_session_name: 'temp')
+        opts[:credentials] = Iamspec::Helpers::Stscache.instance.get_or_create_sts_for_role(assume_role_arn)
       end
       iam = Aws::IAM::Client.new(opts)
       policies = []
@@ -80,7 +82,7 @@ module Iamspec::Action
       opts = {}
       if assume_role_arn
         @sts ||= Aws::STS::Client.new()
-        opts[:credentials] = @sts.assume_role(role_arn: assume_role_arn, role_session_name: 'temp')
+        opts[:credentials] = Iamspec::Helpers::Stscache.instance.get_or_create_sts_for_role(assume_role_arn)
       end
       iam = Aws::IAM::Client.new(opts)
       with_caller_arn(iam.get_role(role_name: role_arn).role.arn)
@@ -91,7 +93,7 @@ module Iamspec::Action
       opts = {}
       if assume_role_arn
         @sts ||= Aws::STS::Client.new()
-        opts[:credentials] = @sts.assume_role(role_arn: assume_role_arn, role_session_name: 'temp')
+        opts[:credentials] = Iamspec::Helpers::Stscache.instance.get_or_create_sts_for_role(assume_role_arn)
       end
       iam = Aws::IAM::Client.new(opts)
       with_source_arn(iam.get_role(role_name: role_arn).role.arn)
@@ -106,7 +108,7 @@ module Iamspec::Action
       opts = {}
       if assume_role_arn
         @sts ||= Aws::STS::Client.new()
-        opts[:credentials] = @sts.assume_role(role_arn: assume_role_arn, role_session_name: 'temp')
+        opts[:credentials] = Iamspec::Helpers::Stscache.instance.get_or_create_sts_for_role(assume_role_arn)
       end
       iam = Aws::IAM::Client.new(opts)
       @userid = iam.get_user(user_name: user_arn).user.user_id
@@ -118,7 +120,7 @@ module Iamspec::Action
       opts = {}
       if assume_role_arn
         @sts ||= Aws::STS::Client.new()
-        opts[:credentials] = @sts.assume_role(role_arn: assume_role_arn, role_session_name: 'temp')
+        opts[:credentials] = Iamspec::Helpers::Stscache.instance.get_or_create_sts_for_role(assume_role_arn)
       end
       iam = Aws::IAM::Client.new(opts)
       @userid = iam.get_role(role_name: role_arn).role.role_id
@@ -150,8 +152,7 @@ module Iamspec::Action
     end
 
     def with_resource_policy(role_arn = nil, resource_arns = @resource_arns)
-      @sts ||= Aws::STS::Client.new()
-      res = @sts.assume_role(role_arn: role_arn, role_session_name: 'temp')
+      res = Iamspec::Helpers::Stscache.instance.get_or_create_sts_for_role(role_arn)
       resource_arns.each do |arn|
         if arn.start_with?('arn:aws:s3:::')
           bucket = arn.scan(/arn:aws:s3:::([^\/]+)/).last.first
