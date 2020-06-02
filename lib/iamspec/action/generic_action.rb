@@ -145,6 +145,12 @@ module Iamspec::Action
       @context_entries[:sourceip] = Aws::IAM::Types::ContextEntry.new({context_key_name: "aws:SourceIp", context_key_values: [sourceip], context_key_type: "string"})
       self
     end
+    
+    def with_fullcontrolgrant(id)
+      @id = id
+      @context_entries[:id] = Aws::IAM::Types::ContextEntry.new({context_key_name: "s3:x-amz-grant-full-control", context_key_values: [id], context_key_type: "string"})
+      self
+    end
 
     def add_context(context_key_name, context_key_values, context_key_type="string")
       @context_entries[context_key_name.to_sym] = Aws::IAM::Types::ContextEntry.new({context_key_name: context_key_name, context_key_values: (context_key_values.is_a?(Array) ? context_key_values : [context_key_values]), context_key_type: context_key_type})
